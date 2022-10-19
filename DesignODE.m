@@ -19,8 +19,8 @@ T = Y(9);
 Tc = Y(10);
 
 %kPa go back and check this
-P_in = Y(11); %pressure in 
-P = 0; % Changing value of P, fix this
+P= Y(11); %pressure in 
+dP_guess = 0; % just in  case fam
 %Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
 %% Defining Constants 
 
@@ -30,10 +30,10 @@ P = 0; % Changing value of P, fix this
 numTubes = 1; %this must be an integer
 tubeDiameter = 1; %We will decide this here, because we have some 
 % engineering intuition here
-T_i = 1; %Temperature in
+T_i = 300; %Temperature in
 
 %this is initial total volumetric flow rates combining all the tubes [m^3/hr]
-Product_in_vol = 0;
+Product_in_vol = 0; 
 C2H4_i_vol= 1729.38;
 HCl_i_vol = 160943.2;
 O2_i_vol = 3724.53;
@@ -79,17 +79,20 @@ CP_C12=1;
 CP_C=1; %Coolant heat capacity
 
 %other constants guess and check 
-superficVelocity = 1; %superficial velocity
-G = 1 ;%gravity 
+%V= 1; %Volumetric velocity
+%superficVelocity = 1; %superficial velocity
+%G = 1 ;%gravity Not Constant
 g_c = 1;%conversion (in metric units)
 D_p = 1;%bead diameter
-Void = 1; %void fraction
+Void = 0.50; %void fraction
 mu = 1; %gas viscosity
 M_DotC = 1; %mass flow of the coolant
 U = 1; %Overall heat transfer coefficient
 A = tubeDiameter*pi*reactorLength/reactorVol; %surface area of heat exchange/volume reactor
-rho = 1; %initial gas density for the ergun equation
-T_0 =1; %inlet temperature
+rho_0 = 1; %initial gas density for the ergun equation NOT constant
+R_gas = 1; % CHECK THE UNITS ON R GAS 
+P_inlet = 2000; % kPa 
+
 %% Heats of Reaction
 H_1 =1;
 H_2=1;
@@ -134,13 +137,17 @@ Tube_balance = numTubes*Top/Bot;
 Coolant_Balance = U*A*(T-Tc)/(M_DotC*CP_C);
 
 %% Pressure Considerations %which we also have to guess and check.....
+rho = rho_0*(P_inlet/P)*(T/T_i)*(F/F_0_single);
+V = (F*R_gas*T)/P; %that P is our simultaneous variable *****F ALSO THIS IS SCUFFED MAKE SURE to CHANGE
+superficVelocity = V/Ac;
+G = rho*superficVelocity;
 Partone = G*(1-Void)/(rho*g_c*D_p*(Void^3)); 
 Parttwo = ((150*(1-Void)*mu)/D_p)+(1.75*G);
 Beta = Partone*Parttwo;
 
-Pressure_Change = Beta*P_in*T*F/(Ac*P*T_0*F_0_single);
+Pressure_Change = -Beta*P*T*F/(Ac*(1-Void)*P*T_i*F_0_single);
 % FIX THIS P
-P=P+Pressure_Change;
+%P=P+Pressure_Change;
 
 %% the end?
 d_product = Cl2Eth;
