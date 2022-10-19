@@ -20,7 +20,7 @@ Tc = Y(10);
 
 %kPa go back and check this
 P_in = Y(11); %pressure in 
-
+P = 0; % Changing value of P, fix this
 %Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
 %% Defining Constants 
 
@@ -67,7 +67,6 @@ reactorLength = reactorVol/numTubes/Ac;
 %output reactor length
 
 
-
 %heat capacities 
 CP_C2H4=1;
 CP_Cl2Eth=1;
@@ -79,7 +78,6 @@ CP_Cl3Eth=1;
 CP_C12=1;
 CP_C=1; %Coolant heat capacity
 
-
 %other constants guess and check 
 superficVelocity = 1; %superficial velocity
 G = 1 ;%gravity 
@@ -89,7 +87,7 @@ Void = 1; %void fraction
 mu = 1; %gas viscosity
 M_DotC = 1; %mass flow of the coolant
 U = 1; %Overall heat transfer coefficient
-A = Diameter*pi*L;
+A = tubeDiameter*pi*reactorLength/reactorVol; %surface area of heat exchange/volume reactor
 rho = 1; %initial gas density for the ergun equation
 T_0 =1; %inlet temperature
 %% Heats of Reaction
@@ -130,7 +128,7 @@ F = C2H4+ Cl2Eth+HCl+O2+CO2+H2O+Cl3Eth+Cl2; %total flow rate based off of specie
 %per tube 
 Top = (R_1 * H_1 + R_2*H_2 + R_3*H_3 + R_4*H_4)*T - U*A*(T-Tc);
 Bot = (F_C2H4*CP_C2H4) + (F_Cl2Eth*CP_Cl2Eth) + (F_HCl*CP_HCl) + (F_O2*CP_O2) + (F_CO2*CP_CO2) + (F_H2O*CP_H2O) + (F_Cl3Eth*CP_Cl3Eth)+(F_Cl2 + CP_C12);
-Tube_balance = n*Top/Bot;
+Tube_balance = numTubes*Top/Bot;
 
 %Coolant fluid
 Coolant_Balance = U*A*(T-Tc)/(M_DotC*CP_C);
@@ -140,7 +138,9 @@ Partone = G*(1-Void)/(rho*g_c*D_p*(Void^3));
 Parttwo = ((150*(1-Void)*mu)/D_p)+(1.75*G);
 Beta = Partone*Parttwo;
 
-Pressure_Change = Beta*P_in*T*F/(Ac*P*T_0*F_0);
+Pressure_Change = Beta*P_in*T*F/(Ac*P*T_0*F_0_single);
+% FIX THIS P
+P=P+Pressure_Change;
 
 %% the end?
 d_product = Cl2Eth;

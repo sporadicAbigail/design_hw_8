@@ -3,13 +3,15 @@
 % Written by: Aimee Maravi, Abigail Hutabarat, Mady Murphy, 
 % Sean Oishi-Holder, and Mohammed Alahmed
 
+clear
+clc
+
 T_out = 533; %outlet Temperature in kelvin 
 Cbd = 1975; %kg cat/m^3 this is catalyst bulk density 
 Void = 0.50; %catalyst voidage
 %heurisitc to account for later: catalyst particle diameter is an eigth of
 %the tube diameter
 
-%REE
 %% Initial Conditions
 %T0 = 1; %what units 
 
@@ -90,5 +92,6 @@ ylabel('Coolant Temperature');
 
 %
 %points of confusion for me 1) what the heck is the units of Ysol?
-%Xsol will be in units of volume
-%are we integrating by 2 variables? 
+%Ysol is solution vector for all the ODEs
+%Xsol will be in units of volume, everything in terms of volume
+%are we integrating by 2 variables? No - technically more than one
