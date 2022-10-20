@@ -30,7 +30,7 @@ dP_guess = 0; % just in  case fam
 numTubes = 1; %this must be an integer
 tubeDiameter = 1; %We will decide this here, because we have some 
 % engineering intuition here
-T_i = 300; %Temperature in
+T_i = 300; %Temperature in [K]
 
 %this is initial total volumetric flow rates combining all the tubes [m^3/hr]
 Product_in_vol = 0; 
@@ -45,14 +45,15 @@ Cl2_i_vol = 33.789;
 VolFlow_i = C2H4_i_vol + HCl_i_vol + O2_i_vol + CO2_i_vol + H2O_i_vol + Cl3Eth_i_vol + Cl2_i_vol; 
 
 %this is initial molar flow rates combining all the tubes [mol/hr]
+%We are setting these 
 F_Product_in = 0;
-F_C2H4_i= 1;
-F_HCl_i = 1;
-F_O2_i= 1;
+F_C2H4_i= 970240;
+F_HCl_i = 2910750;
+F_O2_i= 970240;
 F_CO2_i = 0;
 F_H2O_i = 0;
 F_Cl3Eth_i = 0;
-F_Cl2_i = 1;
+F_Cl2_i = 5820;
 %initial molar flow rate  is constant
 molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2_i; 
 % divide by the number of tubes so it's a single tube
@@ -76,7 +77,7 @@ CP_CO2=1;
 CP_H2O=1;
 CP_Cl3Eth=1;
 CP_C12=1;
-CP_C=1; %Coolant heat capacity
+CP_C= 2.25; %Coolant heat capacity, dowtherm A
 
 %other constants guess and check 
 %V= 1; %Volumetric velocity
@@ -93,11 +94,11 @@ rho_0 = 1; %initial gas density for the ergun equation NOT constant
 R_gas = 1; % CHECK THE UNITS ON R GAS 
 P_inlet = 2000; % kPa 
 
-%% Heats of Reaction
-H_1 =1;
-H_2=1;
-H_3=1;
-H_4=1;
+%% Heats of Reaction [kJ/mol]
+H_1 = -239.111;
+H_2 = -162.090;
+H_3 = -1323.155;
+H_4 = 1;
 
 %% Base rate equations 
 K_1 = 10^(4.2)*exp(-40.1/(8.314*T)); %K_1 temperature Arrhenius equation
