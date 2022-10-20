@@ -17,13 +17,13 @@ Void = 0.50; %catalyst voidage
 
 %this is molar flow rates [mol/hr]
 F_Product_in = 0;
-F_C2H4_i= 1;
-F_HCl_i = 1;
-F_O2_i= 1;
+F_C2H4_i= 970240;
+F_HCl_i = 2910750;
+F_O2_i= 970240;
 F_CO2_i = 0;
 F_H2O_i = 0;
 F_Cl3Eth_i = 0;
-F_Cl2_i = 1;
+F_Cl2_i = 5820;
 %initial molar flow rate  is constant
 molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2_i; 
 

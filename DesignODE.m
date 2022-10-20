@@ -64,8 +64,9 @@ reactorVol = Tau/3600*VolFlow_i; %3600 to convert from s to hr
 %cross sectional area
 Ac=pi*(tubeDiameter/2)^2;
 %here, Matlab calculates a reactor length
+% intentionally without a semicolon so it comes out in our command window
+% as a result
 reactorLength = reactorVol/numTubes/Ac;
-%output reactor length
 
 
 %heat capacities 
@@ -81,16 +82,17 @@ CP_C= 2.25; %Coolant heat capacity, dowtherm A
 
 %other constants guess and check 
 %V= 1; %Volumetric velocity
-%superficVelocity = 1; %superficial velocity
 %G = 1 ;%gravity Not Constant
-g_c = 1;%conversion (in metric units)
-D_p = 1;%bead diameter
+g_c = 1;%some unit conversion (in metric units)
+D_p = tubeDiameter/8;%bead diameter, based on heuristic
 Void = 0.50; %void fraction
-mu = 1; %gas viscosity
+mu = 0.023; %gas viscosity, assume constant throughout the pipe [mPa s]
 M_DotC = 1; %mass flow of the coolant
-U = 1; %Overall heat transfer coefficient
+U = 300; %Overall heat transfer coefficient [W/(m^2-K)]
 A = tubeDiameter*pi*reactorLength/reactorVol; %surface area of heat exchange/volume reactor
-rho_0 = 1; %initial gas density for the ergun equation NOT constant
+rho_0 = 1.002; %initial gas density for the ergun equation NOT constant [kg/m3]
+rho_bulk = 1975; %kg/m3
+rho_cat = 3950; %kg catalyst/m3
 R_gas = 1; % CHECK THE UNITS ON R GAS 
 P_inlet = 2000; % kPa 
 
@@ -98,7 +100,7 @@ P_inlet = 2000; % kPa
 H_1 = -239.111;
 H_2 = -162.090;
 H_3 = -1323.155;
-H_4 = 1;
+H_4 = 228.8;
 
 %% Base rate equations 
 K_1 = 10^(4.2)*exp(-40.1/(8.314*T)); %K_1 temperature Arrhenius equation
