@@ -28,7 +28,7 @@ F_Cl2_i = 5820;
 molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2_i; 
 
 %Guess T initial
-Tube_temp_in=0;
+Tube_temp_in= 300; %assuming the reaction happens at 533K
 Coolant_temp_in = 0;
 Pressure_i = 2000; %inlet pressure in kPa
 IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_Cl2_i, Tube_temp_in, Coolant_temp_in, Pressure_i];
@@ -37,9 +37,9 @@ IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_C
 V_I = 0;
 %guessing the length is of the reactor is z? do we also just guess and
 %check this value???????????????/
-V_Domain = [V_I 1000]; %Define the temperature domain
+V_Domain = [V_I 10]; %Define the temperature domain
 %% SOLVE ODE 
-[Vsol, Ysol] = ode45('DesignODE', V_Domain, IC);
+[Vsol, Ysol] = ode45('DesignODETake2', V_Domain, IC);
 
 %% Data handling 
 % Extraction Solutions for each variable 
