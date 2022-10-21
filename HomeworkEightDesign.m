@@ -5,6 +5,7 @@
 
 clear
 clc
+clear figure
 
 T_out = 533; %outlet Temperature in kelvin 
 Cbd = 1975; %kg cat/m^3 this is catalyst bulk density 
@@ -29,14 +30,14 @@ molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2
 
 %Guess T initial
 Tube_temp_in= 533; %assuming the reaction happens at 533K
-Coolant_temp_in = 0;
-Pressure_i = 12000; %inlet pressure in kPa
+Coolant_temp_in = 200;
+Pressure_i = 20000; %inlet pressure in kPa
 IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_Cl2_i, Tube_temp_in, Coolant_temp_in, Pressure_i];
 %% this is my Domain
 V_I = 0;
 %guessing the length is of the reactor is z? do we also just guess and
 %check this value???????????????/
-V_Domain = [V_I 10]; %Define the temperature domain
+V_Domain = [V_I 50000]; %Define the temperature domain
 %% SOLVE ODE 
 [Vsol, Ysol] = ode45('DesignODETake3', V_Domain, IC);
 
@@ -78,7 +79,7 @@ xlabel('Tube Volume');
 ylabel('Temperature ');
 
 fig3 = figure(3); 
-set(fig2,'name', 'mAb')
+set(fig3,'name', 'mAb')
 area(Vsol, CoolantTemp_sol);
 xlabel('Reactor Volume');
 ylabel('Coolant Temperature');
@@ -88,9 +89,3 @@ set(fig4, 'name','pressure')
 plot(Vsol,Pressure_sol);
 xlabel('Reactor Volume (m3)');
 ylabel('pressure (kPa)');
-
-%
-%points of confusion for me 1) what the heck is the units of Ysol?
-%Ysol is solution vector for all the ODEs
-%Xsol will be in units of volume, everything in terms of volume
-%are we integrating by 2 variables? No - technically more than one
