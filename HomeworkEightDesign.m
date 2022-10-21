@@ -29,15 +29,15 @@ F_Cl2_i = 5820;
 molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2_i; 
 
 %Guess T initial
-Tube_temp_in= 533; %assuming the reaction happens at 533K
-Coolant_temp_in = 200;
+Tube_temp_in= 490; %assuming the reaction happens at 533K
+Coolant_temp_in = 300;
 Pressure_i = 20000; %inlet pressure in kPa
 IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_Cl2_i, Tube_temp_in, Coolant_temp_in, Pressure_i];
 %% this is my Domain
 V_I = 0;
 %guessing the length is of the reactor is z? do we also just guess and
 %check this value???????????????/
-V_Domain = [V_I 50000]; %Define the temperature domain
+V_Domain = [V_I 166000]; %Define the temperature domain
 %% SOLVE ODE 
 [Vsol, Ysol] = ode45('DesignODETake3', V_Domain, IC);
 
@@ -62,15 +62,17 @@ set(fig1, 'name', 'FlowRates');
 %I realized we need a reactor volume rate
 xlabel('Reactor Volume (m3)');
 ylabel('FlowRates');
-plot(Vsol,C2H4_sol)
 hold on
-plot(Vsol,Product_sol)
-plot(Vsol,HCl_sol)
-plot(Vsol,O2_sol)
-plot(Vsol,H2O_sol)
-plot(Vsol,Cl3Eth_sol)
-plot(Vsol,Cl2_sol)
+plot(Vsol,Product_sol, 'LineWidth', 4)
+plot(Vsol,C2H4_sol, 'LineWidth', 4)
+plot(Vsol,HCl_sol, 'LineWidth', 4)
+plot(Vsol,CO2_sol, 'LineWidth', 4)
+plot(Vsol,O2_sol, 'LineWidth', 4)
+plot(Vsol,H2O_sol, 'LineWidth', 4)
+plot(Vsol,Cl3Eth_sol, 'LineWidth', 4)
+plot(Vsol,Cl2_sol, 'LineWidth', 4, 'Color','magenta')
 hold off
+legend('C2H4Cl2','C2H4','HCl','CO2','O2','H2O','C2H3Cl3','Cl2')
 
 fig2 = figure(2);
 set(fig2,'name', 'Reactor Temperature Profile')
@@ -89,3 +91,4 @@ set(fig4, 'name','pressure')
 plot(Vsol,Pressure_sol);
 xlabel('Reactor Volume (m3)');
 ylabel('pressure (kPa)');
+

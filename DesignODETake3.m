@@ -4,12 +4,12 @@ function [Homework8_ODE] = DesignODETake3(V,Y)
 % this comes first because everything is going to be done on a per tube basis
 numTubes = 20; %CHANGE ME
 tubeDiameter = 1; %meters, CHANGE ME
-mDotC = 30000000; %kg/hr
+mDotC = 3000; %kg/hr
 
 %% Other things that change
 T = Y(9); %Kelvin
-T_0 = 466.32; %Kelvin
-P = 300; %kPa
+T_0 = 490; %Kelvin
+P = Y(11); %kPa
 P_0 = 2000; %kPa
 
 Tc = Y(10); %Kelvin
@@ -82,7 +82,7 @@ C_prod = [0.5521*10^5 1.205*10^5 1.502*10^3 0.8719*10^5 653.5]; %array of consta
 Cp_Prod = C_prod(1) + C_prod(2)*(C_prod(3)/T/sinh(C_prod(3)/T))^2 +C_prod(4)*(C_prod(5)/T/cosh(C_prod(5)/T))^2; %kj/mol-K
 C_H2O = [0.33363*10^5 0.2679*10^5 2.6105*10^3 0.08896*10^5 1169]; %array of constants for H2O
 Cp_H2O = C_H2O(1) + C_H2O(2)*(C_H2O(3)/T/sinh(C_H2O(3)/T))^2 +C_H2O(4)*(C_H2O(5)/T/cosh(C_H2O(5)/T))^2;
-C_Cl3Eth = [0.66554*10^5 1.1257*10^5 1.5454*10^3 0.97196^5 717.04]; %array of constants for Cl3Eth
+C_Cl3Eth = [0.66554*10^5 1.1257*10^5 1.5454*10^3 0.97196*10^5 717.04]; %array of constants for Cl3Eth
 Cp_Cl3Eth = C_Cl3Eth(1) + C_Cl3Eth(2)*(C_Cl3Eth(3)/T/sinh(C_Cl3Eth(3)/T))^2 +C_Cl3Eth(4)*(C_Cl3Eth(5)/T/cosh(C_Cl3Eth(5)/T))^2; 
 C_CO2 = [0.2937*10^5 0.3453*10^5 1.428*10^3 0.264*10^5 588]; %array of constants for CO2
 Cp_CO2 = C_CO2(1) + C_CO2(2)*(C_CO2(3)/T/sinh(C_CO2(3)/T))^2 +C_CO2(4)*(C_CO2(5)/T/cosh(C_CO2(5)/T))^2; %kj/mol-K
