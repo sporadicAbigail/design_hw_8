@@ -80,12 +80,12 @@ Cp_CO2 = 0.0453; %kj/mol degree
 Cp_Cl2 = 0.0362; %kj/mol degree
 Cp_dowtherm = 2.25; %kj/mol degree
 
-hrxn1 = -239.111; %kj/mol
-hrxn2 = -162.091; %kj/mol
-hrxn3 = -1323.155; %kj/mol
-hrxn4 = -228.8; %kJ/mol
+hrxn1 = 239.111; %kj/mol
+hrxn2 = 162.091; %kj/mol
+hrxn3 = 1323.155; %kj/mol
+hrxn4 = 228.8; %kJ/mol
 
-U = 300; % [W/m-K] Heat capacity
+U = 300/1000; % [kW/m-K] Heat capacity
 a = tubeDiameter*pi*reactorLength/reactorVol;
 
 %% The ODEs
