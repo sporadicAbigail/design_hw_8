@@ -15,8 +15,8 @@ Void = 0.50; %catalyst voidage
 %% Initial Conditions
 %T0 = 1; %what units 
 
-%this is molar flow rates [mol/hr]
-F_Product_in = 0;
+%this is molar flow rates [mol/hr] 
+F_Product_in = 0; 
 F_C2H4_i= 970240;
 F_HCl_i = 2910750;
 F_O2_i= 970240;
@@ -28,18 +28,17 @@ F_Cl2_i = 5820;
 molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2_i; 
 
 %Guess T initial
-Tube_temp_in= 300; %assuming the reaction happens at 533K
+Tube_temp_in= 533; %assuming the reaction happens at 533K
 Coolant_temp_in = 0;
 Pressure_i = 2000; %inlet pressure in kPa
 IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_Cl2_i, Tube_temp_in, Coolant_temp_in, Pressure_i];
-%Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
 %% this is my Domain
 V_I = 0;
 %guessing the length is of the reactor is z? do we also just guess and
 %check this value???????????????/
 V_Domain = [V_I 10]; %Define the temperature domain
 %% SOLVE ODE 
-[Vsol, Ysol] = ode45('DesignODETake2', V_Domain, IC);
+[Vsol, Ysol] = ode45('DesignODETake3', V_Domain, IC);
 
 %% Data handling 
 % Extraction Solutions for each variable 
@@ -50,7 +49,7 @@ O2_sol = Ysol(:,4);
 CO2_sol = Ysol(:,5);
 H2O_sol = Ysol(:,6);
 Cl3Eth_sol = Ysol(:,7); 
-F_Cl2_i = Ysol(:,8);
+Cl2_sol = Ysol(:,8);
 TubeTemp_sol = Ysol(:,9);
 CoolantTemp_sol = Ysol(:,10);
 Pressure_sol = Ysol(:,11);
@@ -60,21 +59,17 @@ Pressure_sol = Ysol(:,11);
 fig1 = figure(1);
 set(fig1, 'name', 'FlowRates');
 %I realized we need a reactor volume rate
-area(Product_sol,Vsol);
 xlabel('Reactor Volume (L)');
 ylabel('FlowRates');
-hold on 
-plot(C2H4_sol)
-hold on 
-plot(HCl_sol)
-hold on 
-plot(O2_sol)
-hold on 
-plot(H2O_sol)
+plot(Vsol,C2H4_sol)
 hold on
-plot(Cl3Eth_sol)
-hold on
-plot(F_Cl2_i)
+plot(Vsol,Product_sol)
+plot(Vsol,HCl_sol)
+plot(Vsol,O2_sol)
+plot(Vsol,H2O_sol)
+plot(Vsol,Cl3Eth_sol)
+plot(Vsol,Cl2_sol)
+hold off
 
 fig2 = figure(2);
 set(fig2,'name', 'Reactor Temperature Profile')
@@ -87,8 +82,12 @@ set(fig2,'name', 'mAb')
 area(Vsol, CoolantTemp_sol);
 xlabel('Reactor Volume');
 ylabel('Coolant Temperature');
-%we need reactor pressure- thats probably what one of the ODEs we're
-%missing currentlly 
+
+fig4 = figure(4);
+set(fig4, 'name','pressure')
+plot(Vsol,Pressure_sol);
+xlabel('Reactor Volume (L)');
+ylabel('pressure (kPa)');
 
 %
 %points of confusion for me 1) what the heck is the units of Ysol?

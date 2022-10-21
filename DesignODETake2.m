@@ -1,15 +1,17 @@
 function [Homework8_ODE] = DesignODETake2(V,Y)
+numTubes = 11; %this must be an integer
+
 %% output variables 
 
-%Chemical Species molar flow rates
-F_Cl2Eth = Y(1); 
-F_C2H4 = Y(2); %
-F_HCl = Y(3); %
-F_O2 = Y(4); %
-F_CO2= Y(5);
-F_H2O =Y(6);
-F_Cl3Eth = Y(7);
-F_Cl2 =Y(8);
+%Chemical Species molar flow rates on a per tube basis
+F_Cl2Eth = Y(1)/numTubes; 
+F_C2H4 = Y(2)/numTubes; %
+F_HCl = Y(3)/numTubes; %
+F_O2 = Y(4)/numTubes; %
+F_CO2= Y(5)/numTubes;
+F_H2O =Y(6)/numTubes;
+F_Cl3Eth = Y(7)/numTubes;
+F_Cl2 =Y(8)/numTubes;
 
 %Changing F total
 F = F_Cl2Eth+F_C2H4+F_HCl+F_O2+F_CO2+F_H2O+F_Cl3Eth+F_Cl2; 
@@ -22,15 +24,14 @@ rT = 0; %change in temperature
 %kPa go back and check this
 P= Y(11); %pressure in 
 rP = 0; % just in  case fam
-%Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
 %% Defining Constants 
 
 %THE GUESSES
 % The following values are values that we choose/guess
 % reactor length is also unknown, but we calculate
-numTubes = 1; %this must be an integer
-tubeDiameter = 1; %We will decide this here, because we have some 
-% engineering intuition here
+
+tubeDiameter = 2; %We will decide this here, because we have some 
+% engineering intuition here in meters
 
 %this is initial total volumetric flow rates combining all the tubes [m^3/hr]
 Product_in_vol = 0; 
@@ -119,7 +120,9 @@ K_4b = exp(5.4+(160000/(1.987*T)));
 K_4 = K_4f/K_4b;
 R_4 = K_4*((F_O2)/(F_Cl2)); %check the units for k4 and make sure that works out
 
-%% Species balances
+%% ODEs
+
+% Mass balances - directly from the kinetics - units of mols/L cat-hr
 rC2H4 = -(R_1 + R_3);
 rCl2Eth = -(R_2-R_1);
 rHCl = -(2*R_2 + R_1 + 2*R_4);
@@ -128,7 +131,6 @@ rCO2 = -(-2*R_3);
 rH2O = -(-R_1 -R_2 -2*R_3 -R_4);
 rCl3Eth = R_2;
 rCl2= R_4;
-rF = rC2H4+ rCl2Eth + rHCl + rO2 + rCO2 + rH2O + rCl3Eth + rCl2; %total flow rate based off of species balance (changes)
 
 %% Thermal Balances 
 %per tube 
@@ -140,17 +142,17 @@ rF = rC2H4+ rCl2Eth + rHCl + rO2 + rCO2 + rH2O + rCl3Eth + rCl2; %total flow rat
 % FIX THIS P
 
 %% the end?
-d_product = rCl2Eth; % [mol/Lcat-hr]
-d_C2H4 = rC2H4;
-d_HCl = rHCl;
-d_O2 = rO2;
-d_CO2 = rCO2;
-d_H2O = rH2O;
-d_Cl3Eth = rCl3Eth;
-d_Cl2 = rCl2;
-d_T_Tube = rT;
+dCl2Eth = rCl2Eth/1000; % [mol/m3cat-hr]
+dC2H4 = rC2H4/1000;
+dHCl = rHCl/1000;
+dO2 = rO2/1000;
+dCO2 = rCO2/1000;
+dH2O = rH2O/1000;
+dCl3Eth = rCl3Eth/1000;
+dCl2 = rCl2/1000;
+dT_Tube = rT;
 d_T_Coolant = 0;
 d_P = rP;
 
-Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
+Homework8_ODE = [dCl2Eth; dC2H4; dHCl; dO2; dCO2; dH2O; dCl3Eth; dCl2; dT_Tube; d_T_Coolant;d_P];
 end 

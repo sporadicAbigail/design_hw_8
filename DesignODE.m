@@ -20,7 +20,6 @@ Tc = Y(10);
 
 %kPa go back and check this
 P= Y(11); %pressure in 
-dP_guess = 0; % just in  case fam
 %Homework8_ODE = [d_product; d_C2H4; d_HCl; d_O2; d_CO2; d_H2O; d_Cl3Eth; d_Cl2; d_T_Tube; d_T_Coolant;d_P];
 %% Defining Constants 
 
