@@ -8,8 +8,10 @@ tubeDiameter = 1; %meters, CHANGE ME
 %% Other things that change
 T = 533; %Kelvin
 T_0 = Y(9); %Kelvin
-P = 541.0755; %kPa
+P = 550; %kPa
 P_0 = 2000; %kPa
+
+Tc = 300; %Kelvin
 
 F_Prod = Y(1)/numTubes; %product
 F_C2H4 = Y(2)/numTubes; %
@@ -21,6 +23,22 @@ F_Cl3Eth = Y(7)/numTubes;
 F_Cl2 =Y(8)/numTubes;
 
 F_tot = F_Prod + F_C2H4 + F_HCl + F_O2 + F_CO2 + F_H2O + F_Cl3Eth + F_Cl2; 
+
+%% Rate Related Constants
+gasConst = .008314; %kj/mol-K
+k1 = 10^(4.2)*exp(-40.1/gasConst/T); %mol/(L-catalyst-hr)kPa^1.5
+rxn1 = k1*F_C2H4*F_Cl2^0.5/F_tot^1.5*P^1.5;
+
+k2 = 10^13.23*exp(-128.04/0.008314/T); 
+rxn2 = k2*F_Prod*F_Cl2^0.5/F_tot^1.5*P^1.5;
+
+k3 = 10^6.78*exp(-112/.008314/T);
+rxn3=k3*F_O2*F_Cl2^0.5*F_C2H4/F_tot^2.5*P^2/5;
+
+k4f = 1000*exp(17.13-13000/1.987/T);
+k4b = exp(5.4+16000/1.987/T);
+K4 = k4f/k4b;
+rxn4 = K4*F_O2/F_Cl2;
 
 %% Ergun Related Equations
 
@@ -51,21 +69,24 @@ particleDiameter = tubeDiameter/8; %based on heuristic [m], constant
 
 beta_0 = G*(1-phi)/(rho_0*gc*particleDiameter*phi^3)*(150*(1-phi)*mu/particleDiameter+1.75*G);
 
-%% Rate Related Constants
-gasConst = .008314; %kj/mol-K
-k1 = 10^(4.2)*exp(-40.1/gasConst/T); %mol/(L-catalyst-hr)kPa^1.5
-rxn1 = k1*F_C2H4*F_Cl2^0.5/F_tot^1.5*P^1.5;
+%% Energy Balance Related Equations
+Cp_C2H4 = 0.066; %kj/mol degree
+Cp_HCl = 0.029; %kj/mol degree
+Cp_O2 = 0.032; %kj/mol degree
+Cp_Prod = 107.25; %kj/mol degree
+Cp_H2O = 0.0356;
+Cp_Cl3Eth = 122.723; 
+Cp_CO2 = 0.0453; %kj/mol degree
+Cp_Cl2 = 0.0362; %kj/mol degree
+Cp_dowtherm = 2.25; %kj/mol degree
 
-k2 = 10^13.23*exp(-128.04/0.008314/T); 
-rxn2 = k2*F_Prod*F_Cl2^0.5/F_tot^1.5*P^1.5;
+hrxn1 = -239.111; %kj/mol
+hrxn2 = -162.091; %kj/mol
+hrxn3 = -1323.155; %kj/mol
+hrxn4 = -228.8; %kJ/mol
 
-k3 = 10^6.78*exp(-112/.008314/T);
-rxn3=k3*F_O2*F_Cl2^0.5*F_C2H4/F_tot^2.5*P^2/5;
-
-k4f = 1000*exp(17.13-13000/1.987/T);
-k4b = exp(5.4+16000/1.987/T);
-K4 = k4f/k4b;
-rxn4 = K4*F_O2/F_Cl2;
+U = 300; % [W/m-K] Heat capacity
+a = tubeDiameter*pi*reactorLength/reactorVol;
 
 %% The ODEs
 % mass balance
@@ -80,6 +101,12 @@ rCl2 = rxn4;
 
 %Ergun equation
 rP = -beta_0/(1-phi)/Ac*(P_0/P)*(T/T_0)*(F_tot/F_tot_0);
+
+%Thermal equation
+numerator = (rxn1*hrxn1*T+rxn2*hrxn2*T+rxn3*hrxn3*T+rxn4*hrxn4*T)-U*a*(T-Tc);
+denominator = ((1-phi)*(F_C2H4*Cp_C2H4+F_Prod*Cp_Prod+F_HCl*Cp_HCl+F_O2*Cp_O2+F_CO2*Cp_CO2+F_H2O*Cp_H2O+F_Cl3Eth*Cp_Cl3Eth+F_Cl2*Cp_Cl2));
+rT = numerator/denominator;
+
 %% Convert to original script
 dC2H4 = rC2H4;
 dProd = rProd;
@@ -92,5 +119,7 @@ dCl2 = rCl2;
 
 dP = rP;
 
-Homework8_ODE = [dProd; dC2H4; dHCl; dO2; dCO2; dH2O; dCl3Eth; dCl2; 0; 0; dP];
+dT = rT;
+
+Homework8_ODE = [dProd; dC2H4; dHCl; dO2; dCO2; dH2O; dCl3Eth; dCl2; dT; 0; dP];
 end 

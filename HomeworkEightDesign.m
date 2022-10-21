@@ -30,7 +30,7 @@ molFlow_i = F_C2H4_i + F_HCl_i + F_O2_i + F_CO2_i + F_H2O_i + F_Cl3Eth_i + F_Cl2
 %Guess T initial
 Tube_temp_in= 533; %assuming the reaction happens at 533K
 Coolant_temp_in = 0;
-Pressure_i = 2000; %inlet pressure in kPa
+Pressure_i = 12000; %inlet pressure in kPa
 IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_Cl2_i, Tube_temp_in, Coolant_temp_in, Pressure_i];
 %% this is my Domain
 V_I = 0;
@@ -59,7 +59,7 @@ Pressure_sol = Ysol(:,11);
 fig1 = figure(1);
 set(fig1, 'name', 'FlowRates');
 %I realized we need a reactor volume rate
-xlabel('Reactor Volume (L)');
+xlabel('Reactor Volume (m3)');
 ylabel('FlowRates');
 plot(Vsol,C2H4_sol)
 hold on
@@ -86,7 +86,7 @@ ylabel('Coolant Temperature');
 fig4 = figure(4);
 set(fig4, 'name','pressure')
 plot(Vsol,Pressure_sol);
-xlabel('Reactor Volume (L)');
+xlabel('Reactor Volume (m3)');
 ylabel('pressure (kPa)');
 
 %
