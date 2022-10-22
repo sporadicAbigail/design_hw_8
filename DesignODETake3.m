@@ -2,14 +2,14 @@ function [Homework8_ODE] = DesignODETake3(V,Y)
 
 %% Reactor Volume Parameters
 % this comes first because everything is going to be done on a per tube basis
-numTubes = 20; %CHANGE ME
-tubeDiameter = 1; %meters, CHANGE ME
+numTubes = 2; %CHANGE ME
+reactorLength = 10; %meters, CHANGE ME
 mDotC = 3000; %kg/hr
 
 %% Other things that change
 T = Y(9); %Kelvin
-T_0 = 490; %Kelvin
-P = Y(11); %kPa
+T_0 = 466.32; %Kelvin, it works with 490
+P = 2000; %kPa
 P_0 = 2000; %kPa
 
 Tc = Y(10); %Kelvin
@@ -34,7 +34,7 @@ k2 = 10^13.23*exp(-128.04/0.008314/T);
 rxn2 = k2*F_Prod*F_Cl2^0.5/F_tot^1.5*P^1.5;
 
 k3 = 10^6.78*exp(-112/.008314/T);
-rxn3=k3*F_O2*F_Cl2^0.5*F_C2H4/F_tot^2.5*P^2/5;
+rxn3=k3*F_O2*F_Cl2^0.5*F_C2H4/F_tot^2.5*P^2.5;
 
 k4f = 1000*exp(17.13-13000/1.987/T);
 k4b = exp(5.4+16000/1.987/T);
@@ -55,11 +55,12 @@ volumetricFlowRate_0 = volumetricFlowRate_tot_0/numTubes; %L/hr, per tube, const
 Tau = 3.6; %space time in seconds, given 
 reactorVol = Tau/3600*volumetricFlowRate_tot_0 %3600 to convert from s to hr: [L]
 reactorVolm3 = reactorVol/1000; %[m3]
-Ac=pi*(tubeDiameter/2)^2; %cross sectional area [m2]
+Ac = reactorVolm3/numTubes/reactorLength; %[m]
+tubeDiameter=2*sqrt(Ac/pi) %cross sectional area [m2]
 %here, Matlab calculates a reactor length
 % intentionally without a semicolon so it comes out in our command window
 % as a result
-reactorLength = reactorVolm3/numTubes/Ac; %[m]
+
 
 superFicVelocity = volumetricFlowRate_0/1000/Ac; % m/hr
 G = rho*superFicVelocity; % superficial mass velocity [kg/m2-hr]
@@ -88,15 +89,15 @@ C_CO2 = [0.2937*10^5 0.3453*10^5 1.428*10^3 0.264*10^5 588]; %array of constants
 Cp_CO2 = C_CO2(1) + C_CO2(2)*(C_CO2(3)/T/sinh(C_CO2(3)/T))^2 +C_CO2(4)*(C_CO2(5)/T/cosh(C_CO2(5)/T))^2; %kj/mol-K
 C_Cl2 = [0.29142*10^5 0.09176*10^5 0.949*10^3 0.1003*10^5 425]; %array of constants for Cl2
 Cp_Cl2 = C_Cl2(1) + C_Cl2(2)*(C_Cl2(3)/T/sinh(C_Cl2(3)/T))^2 +C_Cl2(4)*(C_Cl2(5)/T/cosh(C_Cl2(5)/T))^2; %kj/mol-K
-Cp_dowtherm = 2.25; %kj/kg-K
+Cp_dowtherm = 1.125 + 0.0025*(T); %kj/kg-K
 
 %should these be neg or pos
-hrxn1 = 239.111; %kj/mol
-hrxn2 = 162.091; %kj/mol
-hrxn3 = 1323.155; %kj/mol
-hrxn4 = 228.8; %kJ/mol
+hrxn1 = -239.111; %kj/mol
+hrxn2 = -162.091; %kj/mol
+hrxn3 = -1323.155; %kj/mol
+hrxn4 = -228.786; %kJ/mol
 
-Ua = 300/1000*tubeDiameter*pi*reactorLength/reactorVol*0.0036; % [kJ/(hr L-cat K) Heat capacity*surface area of heat transfer/volume
+Ua = 300*tubeDiameter*pi*reactorLength/(reactorVolm3/numTubes)*0.0036; % [kJ/(hr L-cat K) Heat capacity*surface area of heat transfer/volume
 
 %% The ODEs
 % mass balance
@@ -113,12 +114,12 @@ rCl2 = rxn4;
 rP = -beta_0/(1-phi)/Ac*(P_0/P)*(T/T_0)*(F_tot/F_tot_0);
 
 %Thermal equation
-numerator = (rxn1*hrxn1*T+rxn2*hrxn2*T+rxn3*hrxn3*T+rxn4*hrxn4*T)-Ua*(T-Tc);
+numerator = (-rxn1*hrxn1-rxn2*hrxn2-rxn3*hrxn3-rxn4*hrxn4)-Ua*(T-Tc);
 denominator = ((1-phi)*(F_C2H4*Cp_C2H4+F_Prod*Cp_Prod+F_HCl*Cp_HCl+F_O2*Cp_O2+F_CO2*Cp_CO2+F_H2O*Cp_H2O+F_Cl3Eth*Cp_Cl3Eth+F_Cl2*Cp_Cl2));
 rT = numerator/denominator;
 
 %cooling thermal balance
-rTc = Ua*(T-Tc)/mDotC/Cp_dowtherm;
+rTc = Ua*(T-Tc)/(mDotC/numTubes)/Cp_dowtherm;
 
 %% Convert to original script
 dC2H4 = rC2H4;
@@ -130,10 +131,15 @@ dH2O = rH2O;
 dCl3Eth = rCl3Eth;
 dCl2 = rCl2;
 
-dP = rP;
+dP = 0;
 
 dT = rT;
 
 dTc = rTc;
 Homework8_ODE = [dProd; dC2H4; dHCl; dO2; dCO2; dH2O; dCl3Eth; dCl2; dT; dTc; dP];
+% %Goal
+% F_C2H4_fin = 0.04*970240/numTubes;
+% if F_C2H4 <= F_C2H4_fin 
+%     return;
+% end
 end 
