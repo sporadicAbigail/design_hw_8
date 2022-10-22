@@ -2,13 +2,13 @@ function [Homework8_ODE] = DesignODETake3(V,Y)
 
 %% Reactor Volume Parameters
 % this comes first because everything is going to be done on a per tube basis
-numTubes = 1; %CHANGE ME
-reactorLength = 4; %meters, CHANGE ME
+numTubes = 10; %CHANGE ME
+reactorLength = 10; %meters, CHANGE ME
 mDotC = 30000; %kg/hr
 
 %% Other things that change
 T = Y(9); %Kelvin
-T_0 = 500; %Kelvin, it works with 490
+T_0 = 466.32; %Kelvin, it works with 490
 P = Y(11); %kPa
 P_0 = 2000; %kPa
 
@@ -66,11 +66,11 @@ superFicVelocity = volumetricFlowRate_0/1000/Ac/3600; % m/s
 G = rho*superFicVelocity; % superficial mass velocity [kg/m2-s]
 
 phi = 0.50; %void fraction/porosity [unitless], constant
-mu = 0.023*1000; %viscosity of gas [kPa-s] or [1000 kg/m-s], constant
+mu = 0.02306/1000; %viscosity of gas [Pa-s] or [kg/m-s], constant
 gc = 1; %unit conversion [metric], constant
 particleDiameter = tubeDiameter/8; %based on heuristic [m], constant
 
-beta_0 = G*(1-phi)/(rho_0*gc*particleDiameter*phi^3)*(150*(1-phi)*mu/particleDiameter+1.75*G);
+beta_0 = G*(1-phi)/(rho_0*gc*particleDiameter*phi^3)*(150*(1-phi)*mu/particleDiameter+1.75*G)/1000; %to get units of kPa/m
 
 %% Energy Balance Related Equations
 C_C2H4 = [0.3338*10^(5) 0.9479*10^5 1.596*10^3 0.551*10^5 740.8]; %array of constants for C2H4
@@ -111,7 +111,7 @@ rCl3Eth = rxn2;
 rCl2 = rxn4;
 
 %Ergun equation
-rP = -beta_0/(1-phi)/Ac*(P_0/P)*(T/T_0)*(F_tot/F_tot_0);
+rP = -beta_0/(1-phi)/Ac*(P_0/P)*(T/T_0)*(F_tot/F_tot_0); %units of kPa/m/m2, everything else is unitless
 
 %Thermal equation
 numerator = (-rxn1*hrxn1-rxn2*hrxn2-rxn3*hrxn3-rxn4*hrxn4)-Ua*(T-Tc);
