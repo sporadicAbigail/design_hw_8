@@ -2,14 +2,14 @@ function [Homework8_ODE] = DesignODETake3(V,Y)
 
 %% Reactor Volume Parameters
 % this comes first because everything is going to be done on a per tube basis
-numTubes = 2; %CHANGE ME
-reactorLength = 10; %meters, CHANGE ME
-mDotC = 3000; %kg/hr
+numTubes = 1; %CHANGE ME
+reactorLength = 4; %meters, CHANGE ME
+mDotC = 30000; %kg/hr
 
 %% Other things that change
 T = Y(9); %Kelvin
-T_0 = 466.32; %Kelvin, it works with 490
-P = 2000; %kPa
+T_0 = 500; %Kelvin, it works with 490
+P = Y(11); %kPa
 P_0 = 2000; %kPa
 
 Tc = Y(10); %Kelvin
@@ -62,11 +62,11 @@ tubeDiameter=2*sqrt(Ac/pi) %cross sectional area [m2]
 % as a result
 
 
-superFicVelocity = volumetricFlowRate_0/1000/Ac; % m/hr
-G = rho*superFicVelocity; % superficial mass velocity [kg/m2-hr]
+superFicVelocity = volumetricFlowRate_0/1000/Ac/3600; % m/s
+G = rho*superFicVelocity; % superficial mass velocity [kg/m2-s]
 
 phi = 0.50; %void fraction/porosity [unitless], constant
-mu = 0.023; %viscosity of gas [mPa-s], constant
+mu = 0.023*1000; %viscosity of gas [kPa-s] or [1000 kg/m-s], constant
 gc = 1; %unit conversion [metric], constant
 particleDiameter = tubeDiameter/8; %based on heuristic [m], constant
 
@@ -131,7 +131,7 @@ dH2O = rH2O;
 dCl3Eth = rCl3Eth;
 dCl2 = rCl2;
 
-dP = 0;
+dP = rP;
 
 dT = rT;
 
