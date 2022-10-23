@@ -3,8 +3,8 @@ function [Homework8_ODE] = DesignODETake3(V,Y)
 %% Reactor Volume Parameters
 % this comes first because everything is going to be done on a per tube basis
 numTubes = 10; %CHANGE ME
-reactorLength = 10; %meters, CHANGE ME
-mDotC = 30000; %kg/hr
+reactorLength = 40; %meters, CHANGE ME
+mDotC = 100; %kg/hr
 
 %% Other things that change
 T = Y(9); %Kelvin
@@ -74,21 +74,29 @@ beta_0 = G*(1-phi)/(rho_0*gc*particleDiameter*phi^3)*(150*(1-phi)*mu/particleDia
 
 %% Energy Balance Related Equations
 C_C2H4 = [0.3338*10^(5) 0.9479*10^5 1.596*10^3 0.551*10^5 740.8]; %array of constants for C2H4
-Cp_C2H4 = C_C2H4(1) + C_C2H4(2)*(C_C2H4(3)/T/sinh(C_C2H4(3)/T))^2 +C_C2H4(4)*(C_C2H4(5)/T/cosh(C_C2H4(5)/T))^2; %kj/mol-K
+Cp_C2H4 = (C_C2H4(1) + C_C2H4(2)*(C_C2H4(3)/T/sinh(C_C2H4(3)/T))^2 +C_C2H4(4)*(C_C2H4(5)/T/cosh(C_C2H4(5)/T))^2)/10^6; %kj/mol-K
+
 C_HCl = [0.29157*10^5 0.09048*10^5 2.0938*10^3 -0.00107*10^5 120]; %array of constants for HCl
-Cp_HCl = C_HCl(1) + C_HCl(2)*(C_HCl(3)/T/sinh(C_HCl(3)/T))^2 +C_HCl(4)*(C_HCl(5)/T/cosh(C_HCl(5)/T))^2; %kj/mol-K
+Cp_HCl = (C_HCl(1) + C_HCl(2)*(C_HCl(3)/T/sinh(C_HCl(3)/T))^2 +C_HCl(4)*(C_HCl(5)/T/cosh(C_HCl(5)/T))^2)/10^6; %kj/mol-K
+
 C_O2 = [0.29103*10^5 0.1004*10^5 2.5265*10^3 0.09356*10^5 1153.8]; %array of constants for O2
-Cp_O2 = C_O2(1) + C_O2(2)*(C_O2(3)/T/sinh(C_O2(3)/T))^2 +C_O2(4)*(C_O2(5)/T/cosh(C_O2(5)/T))^2; %kj/mol-K
+Cp_O2 = (C_O2(1) + C_O2(2)*(C_O2(3)/T/sinh(C_O2(3)/T))^2 +C_O2(4)*(C_O2(5)/T/cosh(C_O2(5)/T))^2)/10^6; %kj/mol-K
+
 C_prod = [0.5521*10^5 1.205*10^5 1.502*10^3 0.8719*10^5 653.5]; %array of constants for prod
-Cp_Prod = C_prod(1) + C_prod(2)*(C_prod(3)/T/sinh(C_prod(3)/T))^2 +C_prod(4)*(C_prod(5)/T/cosh(C_prod(5)/T))^2; %kj/mol-K
+Cp_Prod = (C_prod(1) + C_prod(2)*(C_prod(3)/T/sinh(C_prod(3)/T))^2 +C_prod(4)*(C_prod(5)/T/cosh(C_prod(5)/T))^2)/10^6; %kj/mol-K
+
 C_H2O = [0.33363*10^5 0.2679*10^5 2.6105*10^3 0.08896*10^5 1169]; %array of constants for H2O
-Cp_H2O = C_H2O(1) + C_H2O(2)*(C_H2O(3)/T/sinh(C_H2O(3)/T))^2 +C_H2O(4)*(C_H2O(5)/T/cosh(C_H2O(5)/T))^2;
+Cp_H2O = (C_H2O(1) + C_H2O(2)*(C_H2O(3)/T/sinh(C_H2O(3)/T))^2 +C_H2O(4)*(C_H2O(5)/T/cosh(C_H2O(5)/T))^2)/10^6;
+
 C_Cl3Eth = [0.66554*10^5 1.1257*10^5 1.5454*10^3 0.97196*10^5 717.04]; %array of constants for Cl3Eth
-Cp_Cl3Eth = C_Cl3Eth(1) + C_Cl3Eth(2)*(C_Cl3Eth(3)/T/sinh(C_Cl3Eth(3)/T))^2 +C_Cl3Eth(4)*(C_Cl3Eth(5)/T/cosh(C_Cl3Eth(5)/T))^2; 
+Cp_Cl3Eth = (C_Cl3Eth(1) + C_Cl3Eth(2)*(C_Cl3Eth(3)/T/sinh(C_Cl3Eth(3)/T))^2 +C_Cl3Eth(4)*(C_Cl3Eth(5)/T/cosh(C_Cl3Eth(5)/T))^2)/10^6; 
+
 C_CO2 = [0.2937*10^5 0.3453*10^5 1.428*10^3 0.264*10^5 588]; %array of constants for CO2
-Cp_CO2 = C_CO2(1) + C_CO2(2)*(C_CO2(3)/T/sinh(C_CO2(3)/T))^2 +C_CO2(4)*(C_CO2(5)/T/cosh(C_CO2(5)/T))^2; %kj/mol-K
+Cp_CO2 = (C_CO2(1) + C_CO2(2)*(C_CO2(3)/T/sinh(C_CO2(3)/T))^2 +C_CO2(4)*(C_CO2(5)/T/cosh(C_CO2(5)/T))^2)/10^6; %kj/mol-K
+
 C_Cl2 = [0.29142*10^5 0.09176*10^5 0.949*10^3 0.1003*10^5 425]; %array of constants for Cl2
-Cp_Cl2 = C_Cl2(1) + C_Cl2(2)*(C_Cl2(3)/T/sinh(C_Cl2(3)/T))^2 +C_Cl2(4)*(C_Cl2(5)/T/cosh(C_Cl2(5)/T))^2; %kj/mol-K
+Cp_Cl2 = (C_Cl2(1) + C_Cl2(2)*(C_Cl2(3)/T/sinh(C_Cl2(3)/T))^2 +C_Cl2(4)*(C_Cl2(5)/T/cosh(C_Cl2(5)/T))^2)/10^6; %kj/mol-K
+
 Cp_dowtherm = 1.125 + 0.0025*(T); %kj/kg-K
 
 %should these be neg or pos

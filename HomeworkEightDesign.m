@@ -37,7 +37,7 @@ IC = [F_Product_in, F_C2H4_i, F_HCl_i, F_O2_i, F_CO2_i, F_H2O_i, F_Cl3Eth_i, F_C
 V_I = 0;
 %guessing the length is of the reactor is z? do we also just guess and
 %check this value???????????????/
-V_Domain = [V_I 20000]; %Define the volume domain
+V_Domain = [V_I 6]; %Define the volume domain
 %% SOLVE ODE 
 [Vsol, Ysol] = ode45('DesignODETake3', V_Domain, IC);
 
